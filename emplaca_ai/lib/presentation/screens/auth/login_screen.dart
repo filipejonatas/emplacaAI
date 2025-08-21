@@ -1,11 +1,9 @@
-import 'package:emplaca_ai/presentation/routes/auth_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/utils/validators.dart';
-import '../../../services/biometric_service.dart';
 import '../../providers/auth_provider.dart';
 import '../../routes/app_router.dart';
 import '../../widgets/auth/biometric_button.dart';
+import '../../../services/biometric_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -106,15 +104,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<void> _loadRememberedCredentials() async {
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final rememberedUsername = await authProvider.getRememberedUsername();
-
-      if (rememberedUsername != null && mounted) {
-        _usernameController.text = rememberedUsername;
-        setState(() {
-          _rememberMe = true;
-        });
-      }
+      // For now, we'll skip loading remembered credentials
+      // This feature can be implemented later with secure storage
+      debugPrint('Remember credentials feature not yet implemented');
     } catch (e) {
       // Handle credential loading errors gracefully
       debugPrint('Failed to load remembered credentials: $e');
@@ -141,7 +133,6 @@ class _LoginScreenState extends State<LoginScreen>
       final success = await authProvider.login(
         username: _usernameController.text.trim(),
         password: _passwordController.text,
-        rememberMe: _rememberMe,
       );
 
       if (success) {
@@ -248,7 +239,8 @@ class _LoginScreenState extends State<LoginScreen>
             onPressed: () {
               Navigator.of(context).pop();
               // In a real app, you might implement security question recovery here
-              _showErrorSnackBar('Please contact support for password recovery');
+              _showErrorSnackBar(
+                  'Please contact support for password recovery');
             },
             child: const Text('OK'),
           ),
@@ -325,9 +317,12 @@ class _LoginScreenState extends State<LoginScreen>
                     builder: (context, child) {
                       return Transform.translate(
                         offset: Offset(
-                          _shakeAnimation.value * 10 *
-                          (1 - _shakeAnimation.value) *
-                          ((_shakeController.value * 4).floor() % 2 == 0 ? 1 : -1),
+                          _shakeAnimation.value *
+                              10 *
+                              (1 - _shakeAnimation.value) *
+                              ((_shakeController.value * 4).floor() % 2 == 0
+                                  ? 1
+                                  : -1),
                           0,
                         ),
                         child: _buildLoginForm(),
@@ -476,11 +471,13 @@ class _LoginScreenState extends State<LoginScreen>
             children: [
               Checkbox(
                 value: _rememberMe,
-                onChanged: _isLoading ? null : (value) {
-                  setState(() {
-                    _rememberMe = value ?? false;
-                  });
-                },
+                onChanged: _isLoading
+                    ? null
+                    : (value) {
+                        setState(() {
+                          _rememberMe = value ?? false;
+                        });
+                      },
               ),
               const Text('Remember username'),
             ],
@@ -538,59 +535,5 @@ class _LoginScreenState extends State<LoginScreen>
       ),
       textAlign: TextAlign.center,
     );
-  }
-}
-
-// Temporary BiometricButton widget - will be implemented in later checkpoints
-class BiometricButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final bool isLoading;
-
-  const BiometricButton({
-    super.key,
-    this.onPressed,
-    this.isLoading = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: isLoading ? null : onPressed,
-      icon: isLoading
-          ? const SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.fingerprint),
-      label: const Text('Login with Biometric'),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    );
-  }
-}
-
-// Temporary BiometricService - will be implemented in later checkpoints
-class BiometricService {
-  Future<bool> isBiometricAvailable() async {
-    // Simulate biometric availability check
-    await Future.delayed(const Duration(milliseconds: 500));
-    return false; // Return false for now until implemented
-  }
-
-  Future<bool> isBiometricEnabled() async {
-    // Simulate biometric enabled check
-    await Future.delayed(const Duration(milliseconds: 300));
-    return false; // Return false for now until implemented
-  }
-
-  Future<bool> authenticateWithBiometric() async {
-    // Simulate biometric authentication
-    await Future.delayed(const Duration(milliseconds: 1000));
-    return false; // Return false for now until implemented
   }
 }

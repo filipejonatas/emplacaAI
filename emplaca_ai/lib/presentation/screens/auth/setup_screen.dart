@@ -1,5 +1,5 @@
 import 'package:emplaca_ai/core/utils/crypto_utils.dart';
-import 'package:emplaca_ai/presentation/routes/auth_guard.dart';
+import 'package:emplaca_ai/presentation/routes/auth_guard.dart' as AuthGuard;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/utils/validators.dart';
@@ -44,7 +44,7 @@ class _SetupScreenState extends State<SetupScreen>
     'What was the name of your elementary school?',
   ];
 
-  get Validators => null;
+  get validators => null;
 
   @override
   void initState() {

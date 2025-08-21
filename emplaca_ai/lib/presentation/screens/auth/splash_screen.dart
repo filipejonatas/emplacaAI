@@ -1,4 +1,4 @@
-// lib/presentation/screens/auth/splash_screen.dart
+//lib/presentation/screens/auth/splash_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +7,7 @@ import '../../../core/utils/session_manager.dart';
 import '../../../data/datasources/local/secure_storage_service.dart';
 import '../../providers/auth_provider.dart';
 import '../../routes/app_router.dart';
-import '../../routes/auth_guard.dart';
+import '../../routes/auth_guard.dart' as AuthGuard;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -112,7 +112,6 @@ class _SplashScreenState extends State<SplashScreen>
 
       // Check session validity and restore if possible
       await _handleSessionValidation(authProvider, sessionManager);
-
     } catch (e) {
       // Error occurred, go to login as fallback
       debugPrint('Splash screen error: $e');
@@ -133,7 +132,8 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  Future<bool> _checkStoredCredentials(SecureStorageService secureStorage) async {
+  Future<bool> _checkStoredCredentials(
+      SecureStorageService secureStorage) async {
     try {
       return await secureStorage.hasCredentials();
     } catch (e) {
@@ -152,7 +152,7 @@ class _SplashScreenState extends State<SplashScreen>
       if (isSessionValid) {
         // Valid session exists, try to restore authentication state
         final success = await authProvider.restoreSession();
-        
+
         if (success) {
           await _navigateToMainApp();
         } else {
@@ -169,7 +169,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateToSetup() async {
     if (!mounted || _isNavigating) return;
-    
+
     _isNavigating = true;
     try {
       await AppRouter.navigateToSetup(context);
@@ -183,7 +183,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateToLogin() async {
     if (!mounted || _isNavigating) return;
-    
+
     _isNavigating = true;
     try {
       await AppRouter.navigateToLogin(context);
@@ -198,7 +198,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateToMainApp() async {
     if (!mounted || _isNavigating) return;
-    
+
     _isNavigating = true;
     try {
       await AppRouter.navigateToMainApp(context);
@@ -401,7 +401,7 @@ class _SplashScreenState extends State<SplashScreen>
 class SessionManager {
   static final SessionManager _instance = SessionManager._internal();
   static SessionManager get instance => _instance;
-  
+
   SessionManager._internal();
 
   Future<bool> isSessionValid() async {
